@@ -1,0 +1,15 @@
+.swal2-input {
+    text-align: center;
+    border: none;
+    border-bottom: 1px grey solid;
+    box-shadow: none;
+    padding: none;
+    border-radius: 0;
+}
+.swal2-input:focus {
+    /* text-align: center; */
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+}
