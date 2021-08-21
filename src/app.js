@@ -147,27 +147,31 @@ const App = () => {
                         </div>
                     </div>
                 </>
-            ) : null
+            ) : (
+                <div className="ui active inverted dimmer">
+                    <div className="ui large text loader">Loading</div>
+                </div>
+            )
             }
             {(transList && transList.length) ? (
                 <>
                     <div className="ui raised very padded text container segment">
                         <h1>Transactions</h1>
-                        <table className="ui celled table">
+                        <table className="ui celled table fixed unstackable">
                             <thead>
                                 <tr><th>Date</th>
                                     <th>Description</th>
                                     <th>Amount</th>
                                     <th>Balance</th>
-                                    <th>Type</th>
+                                    {/* <th>Type</th> */}
                                 </tr></thead>
                             <tbody>
                                 {transList.map((ele, index) => (<tr key={index}>
                                     <td data-label="Date">{new Date(ele.date).toLocaleString()}</td>
                                     <td data-label="Description">{ele.description}</td>
-                                    <td data-label="Amount">{Math.abs(ele.amount)}</td>
+                                    <td className={ele.type === 'CREDIT' ? 'negative' : 'positive'} data-label="Amount">{Math.abs(ele.amount)} ({ele.type === 'CREDIT' ? 'Cr' : 'Dr'})</td>
                                     <td data-label="Balance">{ele.balance}</td>
-                                    <td data-label="Type">{ele.type}</td>
+                                    {/* <td data-label="Type">{ele.type}</td> */}
                                 </tr>))}
                             </tbody>
                         </table>
