@@ -14,6 +14,7 @@ const App = () => {
     const [transList, setTranslist] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [skipRecords, setSkipRecords] = useState(0);
+    const [isExportProcessing, setIsExportProcessing] = useState(false);
     const limitRecords = 10;
     const getUserDetails = async (user) => {
 
@@ -41,6 +42,32 @@ const App = () => {
             return data;
         } catch (error) {
 
+        }
+    }
+
+    const exportToCSV = async () => {
+
+        try {
+            setIsExportProcessing(true);
+            let { data } = await walletBackend.get(`/transactions/all/${user.id}`);
+            data = data.replace(/}/g, "},").replace(/,]/, "]");
+            data = JSON.parse(data);
+            if (data instanceof Array && data.length) {
+                let csvData = [Object.keys(data[0])];
+                data.forEach(ele => csvData.push(Object.values(ele)));
+                let csvContent = "data:text/csv;charset=utf-8," + csvData.join('\n');
+                var encodedUri = encodeURI(csvContent);
+                // window.open(encodedUri);
+                var link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `${user.name} - transactions.csv`);
+                document.body.appendChild(link);
+                link.click();
+                setIsExportProcessing(false);
+            }
+        } catch (error) {
+            setIsExportProcessing(false);
+            Swal.fire('Error', error.toString(), 'error');
         }
     }
 
@@ -189,6 +216,11 @@ const App = () => {
                 <>
                     <div className="ui raised very padded text container segment">
                         <h1>Transactions</h1>
+                        <button title="Export in CSV" className={`ui icon button basic positive right floated ${isExportProcessing ? 'loading disabled' : ''}`} onClick={() => exportToCSV()}>
+                            <i className="download icon"></i>
+                        </button>
+                        <div>
+                        </div>
                         <table className="ui celled table fixed unstackable">
                             <thead>
                                 <tr><th>Date</th>
